@@ -54,74 +54,13 @@ int show_sprite(uint8_t sprite_number, uint8_t sprite_x, uint8_t sprite_y, uint8
         for (uint8_t sprite_column = 0; sprite_column < 8; sprite_column++)
         {
             if (sprite_data & mask)
-                tft.fillRect((sprite_x + sprite_column)*2, (sprite_y + sprite_row)*2, 2, 2, sprite_color);
+                tft.fillRect((sprite_x + sprite_column) * 2, (sprite_y + sprite_row) * 2, 2, 2, sprite_color);
             mask <<= 1;
         }
     }
 }
 
-/*
-sprites_uptodate = 1;
-for (uint8_t sprite_number = 0; sprite_number < NB_SPRITES; sprite_number++)
+int erase(uint8_t x, uint8_t y, uint16_t color)
 {
-    if (displayed_sprites[sprite_number].changed_displayed & 0x02) // Sprite data was changed
-    {
-        displayed_sprites[sprite_number].changed_displayed &= 0xFD; // Clear change flag
-
-        //
-        // "Erase" old sprite position
-        //
-        graphic_tft.fillRect(
-            20 + displayed_sprites[sprite_number].previous_start_x,
-            displayed_sprites[sprite_number].previous_start_y,
-            16 * displayed_sprites[sprite_number].previous_size,
-            16 * displayed_sprites[sprite_number].previous_size,
-            background_color);
-        //
-        // Record new position as previous one
-        //
-        displayed_sprites[sprite_number].previous_start_x = displayed_sprites[sprite_number].start_x;
-        displayed_sprites[sprite_number].previous_start_y = displayed_sprites[sprite_number].start_y;
-        displayed_sprites[sprite_number].previous_size = displayed_sprites[sprite_number].size;
-
-#if defined(DEBUG_SERIAL)
-        Serial.print("show_sprites() - sprite numéro ");
-        Serial.println(sprite_number);
-#endif
-        for (uint8_t sprite_row = 0; sprite_row < 8; sprite_row++)
-        {
-            uint8_t sprite_data = intel8245_ram[0x80 + sprite_number * 0x08 + sprite_row];
-#if defined(DEBUG_SERIAL)
-            Serial.print("show_sprites() - affichage de la ligne ");
-            Serial.print(sprite_row);
-            Serial.print(" - data : 0x");
-            Serial.println(sprite_data, HEX);
-            Serial.print("start_x : ");
-            Serial.println(displayed_sprites[sprite_number].start_x);
-            Serial.print("start_y : ");
-            Serial.println(displayed_sprites[sprite_number].start_y);
-            Serial.print("color : 0x");
-            Serial.println(displayed_sprites[sprite_number].color, HEX);
-            Serial.print("size : ");
-            Serial.println(displayed_sprites[sprite_number].size);
-#endif
-
-            uint8_t mask = 0x01;
-
-            for (uint8_t sprite_column = 0; sprite_column < 8; sprite_column++)
-            {
-                if (sprite_data & mask)
-                {
-                    graphic_tft.fillRect(
-                        20 + displayed_sprites[sprite_number].start_x + sprite_column * 2 * displayed_sprites[sprite_number].size,
-                        displayed_sprites[sprite_number].start_y + sprite_row * 2 * displayed_sprites[sprite_number].size,
-                        2 * displayed_sprites[sprite_number].size,
-                        2 * displayed_sprites[sprite_number].size,
-                        displayed_sprites[sprite_number].color);
-                }
-                mask <<= 1;
-            }
-        }
-    }
-
-    */
+    tft.fillRect(x * 2, y * 2, 16, 16, color);
+}

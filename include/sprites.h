@@ -37,5 +37,6 @@ extern int8_t right_h_speed, right_v_speed;
 extern Adafruit_ST7735 tft;
 
 int show_sprite(uint8_t sprite_number, uint8_t sprite_x, uint8_t sprite_y, uint8_t sprite_color_index);
+int erase(uint8_t x, uint8_t y, uint16_t color);
 
 #endif // (SPRITES_H)
