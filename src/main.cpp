@@ -9,7 +9,7 @@
 #define BUTTON_PIN 5
 #define LED 4
 
-#undef DEBUG_SERIAL
+#undef DEBUG
 
 #define OUTPUT_B0 8
 #define OUTPUT_B1 9
@@ -65,7 +65,7 @@ void loop()
 
   int8_t main_button = digitalRead(BUTTON_PIN);
 
-#if defined(DEBUG_SERIAL)
+#if defined(DEBUG)
   Serial.print("Left - horizontal = ");
   Serial.print(lj_horizontal);
   Serial.print(", vertical = ");
@@ -187,8 +187,8 @@ void loop()
       transmit &= 0xFF;
     }
   }
-  Serial.print("Transmit : ");
-  Serial.println(transmit, HEX);
+  // Serial.print("Transmit : ");
+  // Serial.println(transmit, HEX);
 
   //  digitalWrite(OUTPUT_B0, LOW);
 }
