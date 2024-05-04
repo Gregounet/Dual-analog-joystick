@@ -1,28 +1,34 @@
 #include <Arduino.h>
 
-#define LJ_HORIZONTAL_PIN A0
-#define LJ_VERTICAL_PIN A1
-#define LJ_FIRE_PIN 7
-#define RJ_HORIZONTAL_PIN A2
-#define RJ_VERTICAL_PIN A3
+#define LJ_HORIZONTAL_PIN A4
+#define LJ_VERTICAL_PIN A5
+#define LJ_FIRE_PIN 5
+#define RJ_HORIZONTAL_PIN A3
+#define RJ_VERTICAL_PIN A2
 #define RJ_FIRE_PIN 6
-#define BUTTON_PIN 5
-#define LED 4
+
+#define BUTTON_PIN A0
+#define JS_LED A1
 
 #undef DEBUG
 
-#define OUTPUT_B0 8
-#define OUTPUT_B1 9
-#define OUTPUT_B2 10
-#define OUTPUT_B3 11
-#define OUTPUT_B4 12
+#define LED_PIN 13
 
-#define SELECT_JOYSTICK 13
+#define OUTPUT_B0 2
+#define OUTPUT_B1 3
+#define OUTPUT_B2 4
+#define OUTPUT_B3 7
+#define OUTPUT_B4 8
+
+#define SELECT_JOYSTICK 9
+
+uint16_t elapsed_time;
+uint8_t led_status;
 
 void setup()
 {
-  Serial.begin(9600);
-  delay(100);
+  Serial.begin(38400);
+  delay(10);
   pinMode(LJ_HORIZONTAL_PIN, INPUT);
   pinMode(LJ_VERTICAL_PIN, INPUT);
   pinMode(RJ_HORIZONTAL_PIN, INPUT);
@@ -32,7 +38,8 @@ void setup()
   pinMode(RJ_FIRE_PIN, INPUT_PULLUP);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-  pinMode(LED, OUTPUT);
+  pinMode(JS_LED, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   pinMode(OUTPUT_B0, OUTPUT);
   pinMode(OUTPUT_B1, OUTPUT);
@@ -47,13 +54,28 @@ void setup()
   digitalWrite(OUTPUT_B2, HIGH);
   digitalWrite(OUTPUT_B3, HIGH);
   digitalWrite(OUTPUT_B4, HIGH);
+
+  digitalWrite(LED_PIN, LOW);
+
+  elapsed_time = millis();
 }
 
 void loop()
 {
+  if (millis() - elapsed_time > 50)
+  {
+    led_status = (led_status) ? 0 : 1;
+    digitalWrite(LED_PIN, led_status);
+    // digitalWrite(OUTPUT_B0, led_status);
+    // digitalWrite(OUTPUT_B1, led_status);
+    // digitalWrite(OUTPUT_B2, led_status);
+    // digitalWrite(OUTPUT_B3, led_status);
+    // digitalWrite(OUTPUT_B4, led_status);
+    elapsed_time = millis();
+  }
   delay(100);
 
-  uint8_t transmit = 0xFF;
+    uint8_t transmit = 0xFF;
 
   int16_t lj_horizontal = analogRead(LJ_HORIZONTAL_PIN);
   int16_t lj_vertical = analogRead(LJ_VERTICAL_PIN);
@@ -80,7 +102,7 @@ void loop()
   Serial.print(main_button);
   Serial.print(" -- Right - button = ");
   Serial.println(rj_button);
-  delay(1000);
+  delay(10);
 #endif
 
   if (digitalRead(SELECT_JOYSTICK) == LOW)
@@ -90,42 +112,36 @@ void loop()
       digitalWrite(OUTPUT_B1, HIGH);
       digitalWrite(OUTPUT_B3, LOW);
       transmit &= 0xFE;
-      // Serial.println("Etape A");
     }
     if (lj_horizontal > 767)
     {
       digitalWrite(OUTPUT_B1, LOW);
       digitalWrite(OUTPUT_B3, HIGH);
       transmit &= 0xFB;
-      // Serial.println("Etape B");
     }
     if (lj_horizontal >= 255 && lj_horizontal <= 767)
     {
       digitalWrite(OUTPUT_B1, HIGH);
       digitalWrite(OUTPUT_B3, HIGH);
       transmit &= 0xFF;
-      // Serial.println("Etape C");
     }
     if (lj_vertical < 255)
     {
       digitalWrite(OUTPUT_B2, HIGH);
       digitalWrite(OUTPUT_B0, LOW);
       transmit &= 0xF7;
-      // Serial.println("Etape D");
     }
     if (lj_vertical > 767)
     {
       digitalWrite(OUTPUT_B2, LOW);
       digitalWrite(OUTPUT_B0, HIGH);
       transmit &= 0xFD;
-      // Serial.println("Etape E");
     }
     if (lj_vertical >= 255 && lj_vertical <= 767)
     {
       digitalWrite(OUTPUT_B2, HIGH);
       digitalWrite(OUTPUT_B0, HIGH);
       transmit &= 0xFF;
-      // Serial.println("Etape F");
     }
     if (lj_button == 0)
     {
@@ -187,8 +203,8 @@ void loop()
       transmit &= 0xFF;
     }
   }
-  // Serial.print("Transmit : ");
-  // Serial.println(transmit, HEX);
+  Serial.print("Transmit : ");
+  Serial.println(transmit, HEX);
 
   //  digitalWrite(OUTPUT_B0, LOW);
 }
