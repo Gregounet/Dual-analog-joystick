@@ -66,14 +66,15 @@ void loop()
   {
     led_status = (led_status) ? 0 : 1;
     digitalWrite(LED_PIN, led_status);
-    // digitalWrite(OUTPUT_B0, led_status);
+    // digiterial.print("Transmit : ");
+  // SerialWrite(OUTPUT_B0, led_status);
     // digitalWrite(OUTPUT_B1, led_status);
     // digitalWrite(OUTPUT_B2, led_status);
     // digitalWrite(OUTPUT_B3, led_status);
     // digitalWrite(OUTPUT_B4, led_status);
     elapsed_time = millis();
   }
-  delay(100);
+  // delay(100);
 
     uint8_t transmit = 0xFF;
 
@@ -203,8 +204,8 @@ void loop()
       transmit &= 0xFF;
     }
   }
-  Serial.print("Transmit : ");
-  Serial.println(transmit, HEX);
+  // Serial.print("Transmit : ");
+  // Serial.println(transmit, HEX);
 
   //  digitalWrite(OUTPUT_B0, LOW);
 }
